@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Remove env section to prevent exposing API keys to the client
+  serverExternalPackages: ['pdf-parse'],
 };
 
 export default nextConfig;
