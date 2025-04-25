@@ -1,6 +1,6 @@
 import pdfParse from 'pdf-parse';
 
-export async function extractTextFromPDF(pdfBuffer: Buffer, startPage: number = 1, pageCount: number = 10): Promise<string> {
+export async function extractTextFromPDF(pdfBuffer: Buffer, startPage: number = 1, pageCount: number = 1): Promise<string> {
   const options = {
     max: startPage + pageCount - 1, // Extract up to this page (inclusive)
     pagerender: function(pageData: any) {
@@ -30,7 +30,10 @@ export async function extractTextFromPDF(pdfBuffer: Buffer, startPage: number = 
   }
 }
 
-export function getPageRangeString(startPage: number, pageCount: number): string {
+export function getPageRangeString(startPage: number, pageCount: number = 1): string {
+  if (pageCount === 1) {
+    return `${startPage}`;
+  }
   const endPage = startPage + pageCount - 1;
   return `${startPage}-${endPage}`;
 } 

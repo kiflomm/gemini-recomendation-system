@@ -24,7 +24,7 @@ export default function Recommendations({ type, pdfFileName }: RecommendationsPr
   const [currentPage, setCurrentPage] = useState(1);
   const [isComplete, setIsComplete] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const pageCount = 10;
+  const pageCount = 1;
 
   const fetchRecommendations = async () => {
     setIsLoading(true);
@@ -117,7 +117,7 @@ export default function Recommendations({ type, pdfFileName }: RecommendationsPr
       
       {pageRange && (
         <p className="text-sm text-gray-500 mb-4">
-          Showing recommendations for pages {pageRange}
+          Showing recommendations for page {pageRange}
         </p>
       )}
       
@@ -194,7 +194,7 @@ export default function Recommendations({ type, pdfFileName }: RecommendationsPr
                 onClick={loadNextBatch}
                 size="lg"
               >
-                Load Next {pageCount} Pages
+                Load Next Page
               </Button>
             </div>
           )}

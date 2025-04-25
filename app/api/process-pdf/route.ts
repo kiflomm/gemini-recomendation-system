@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const startPage = parseInt(formData.get('startPage') as string) || 1;
-    const pageCount = parseInt(formData.get('pageCount') as string) || 10;
+    const pageCount = parseInt(formData.get('pageCount') as string) || 1;
     const recommendationType = formData.get('type') as string; // 'videos' or 'pics'
 
     if (!file) {
