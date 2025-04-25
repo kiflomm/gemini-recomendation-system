@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState } from 'react'; 
 import PDFUploader from '../components/PDFUploader';
 import Recommendations from '../components/Recommendations';
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [uploadedPdfName, setUploadedPdfName] = useState<string | null>(null);
@@ -16,9 +16,9 @@ export default function Home() {
   return (
     <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <header className="mb-12 flex flex-col items-center">
-        <h1 className="text-3xl font-bold mb-2">PDF Insight Engine</h1>
+        <h1 className="text-3xl font-bold mb-2">Upload Your PDF</h1>
         <p className="text-gray-600 text-center max-w-2xl">
-          Upload a PDF document and get intelligent recommendations based on its content
+          Upload a PDF document and get intelligent Video and Image recommendations based on its content
         </p>
       </header>
 
@@ -36,13 +36,14 @@ export default function Home() {
             
             <p className="text-center mb-4">Choose what type of recommendations you want:</p>
             
-            <div className="flex gap-4 justify-center">
-              <button
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
                 onClick={() => setRecommendationType('videos')}
-                className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2"
+                className="w-full sm:w-auto"
+                size="lg"
               >
                 <svg 
-                  className="w-5 h-5"
+                  className="w-5 h-5 mr-2"
                   fill="none" 
                   stroke="currentColor"
                   viewBox="0 0 24 24" 
@@ -62,13 +63,15 @@ export default function Home() {
                   />
                 </svg>
                 Videos
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setRecommendationType('pics')}
-                className="px-6 py-3 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2"
+                className="w-full sm:w-auto"
+                size="lg"
+                variant="secondary"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-5 h-5 mr-2"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -82,41 +85,44 @@ export default function Home() {
                   />
                 </svg>
                 Images
-              </button>
+              </Button>
             </div>
             
             <div className="mt-8 text-center">
-              <button
+              <Button
                 onClick={() => {
                   setUploadedPdfName(null);
                   setRecommendationType(null);
                 }}
-                className="text-gray-500 hover:text-gray-700"
+                variant="ghost"
+                className="text-sm"
               >
                 Upload a different PDF
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
           <div className="w-full">
-            <div className="mb-8 flex justify-between items-center">
+            <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h2 className="text-xl font-semibold">{uploadedPdfName}</h2>
-              <div className="space-x-4">
-                <button
+              <div className="flex flex-col sm:flex-row gap-2 sm:space-x-4">
+                <Button
                   onClick={() => setRecommendationType(null)}
-                  className="text-gray-500 hover:text-gray-700"
+                  variant="outline"
+                  size="sm"
                 >
                   Back to Options
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => {
                     setUploadedPdfName(null);
                     setRecommendationType(null);
                   }}
-                  className="text-gray-500 hover:text-gray-700"
+                  variant="outline"
+                  size="sm"
                 >
                   Upload New PDF
-                </button>
+                </Button>
               </div>
             </div>
             
@@ -129,7 +135,7 @@ export default function Home() {
       </main>
       
       <footer className="mt-16 text-center text-sm text-gray-500">
-        <p>PDF Insight Engine - Powered by Gemini AI and Pinecone</p>
+        <p>Tugza innovation private limited @2025 - All rights reserved</p>
       </footer>
     </div>
   );

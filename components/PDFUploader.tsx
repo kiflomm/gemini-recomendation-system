@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { Button } from "@/components/ui/button";
 
 interface PDFUploaderProps {
   onUploadSuccess: (fileName: string) => void;
@@ -77,19 +78,20 @@ export default function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
     }
   }, [onUploadSuccess]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     accept: {
       'application/pdf': ['.pdf'],
     },
     maxFiles: 1,
+    noClick: true, // Disable click to open file dialog
   });
 
   return (
     <div className="w-full max-w-md mx-auto">
       <div
         {...getRootProps()}
-        className={`p-8 border-2 border-dashed rounded-lg text-center cursor-pointer transition-colors ${
+        className={`p-8 border-2 border-dashed rounded-lg text-center transition-colors ${
           isDragActive
             ? 'border-blue-500 bg-blue-50'
             : 'border-gray-300 hover:border-blue-400'
@@ -120,11 +122,18 @@ export default function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
             <p className="mt-2 text-sm font-medium text-gray-900">
               {isDragActive
                 ? 'Drop the PDF here'
-                : 'Drag & drop a PDF file here, or click to select'}
+                : 'Drag & drop a PDF file here'}
             </p>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-gray-500 mb-4">
               PDF files only (max 50MB)
             </p>
+            <Button 
+              onClick={open} 
+              className="w-full sm:w-auto"
+              variant="outline"
+            >
+              Select PDF File
+            </Button>
           </>
         )}
       </div>

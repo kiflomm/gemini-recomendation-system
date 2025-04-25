@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
 
 interface RecommendationsProps {
   type: 'videos' | 'pics';
@@ -174,12 +175,12 @@ export default function Recommendations({ type, pdfFileName }: RecommendationsPr
           
           {!isComplete && (
             <div className="mt-8 text-center">
-              <button
+              <Button
                 onClick={loadNextBatch}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                size="lg"
               >
                 Load Next {pageCount} Pages
-              </button>
+              </Button>
             </div>
           )}
         </>
