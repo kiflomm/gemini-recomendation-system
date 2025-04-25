@@ -2,6 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface RecommendationsProps {
   type: 'videos' | 'pics';
@@ -16,11 +23,13 @@ export default function Recommendations({ type, pdfFileName }: RecommendationsPr
   const [pageRange, setPageRange] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
   const [isComplete, setIsComplete] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   const pageCount = 10;
 
   const fetchRecommendations = async () => {
     setIsLoading(true);
     setError(null);
+    setHasSearched(true);
 
     try {
       // Retrieve the PDF file from IndexedDB
@@ -141,33 +150,39 @@ export default function Recommendations({ type, pdfFileName }: RecommendationsPr
           {recommendations.length > 0 ? (
             <div className="grid grid-cols-1 gap-4">
               {recommendations.map((recommendation, index) => (
-                <div
-                  key={index}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                >
-                  <p className="text-lg">{recommendation}</p>
-                  {type === 'videos' && (
-                    <a
-                      href={`https://www.youtube.com/results?search_query=${encodeURIComponent(recommendation)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block mt-2 text-blue-600 hover:text-blue-800"
-                    >
-                      Search on YouTube →
-                    </a>
-                  )}
-                  {type === 'pics' && (
-                    <a
-                      href={`https://www.google.com/search?q=${encodeURIComponent(recommendation)}&tbm=isch`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block mt-2 text-blue-600 hover:text-blue-800"
-                    >
-                      Search Images →
-                    </a>
-                  )}
-                </div>
+                <Card key={index}>
+                  <CardContent className="pt-6">
+                    <p className="text-lg">{recommendation}</p>
+                  </CardContent>
+                  <CardFooter>
+                    {type === 'videos' && (
+                      <a
+                        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(recommendation)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        Search on YouTube →
+                      </a>
+                    )}
+                    {type === 'pics' && (
+                      <a
+                        href={`https://www.google.com/search?q=${encodeURIComponent(recommendation)}&tbm=isch`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        Search Images →
+                      </a>
+                    )}
+                  </CardFooter>
+                </Card>
               ))}
+            </div>
+          ) : hasSearched ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500 mb-3">Looking for relevant content...</p>
+              <div className="inline-block animate-pulse bg-gray-200 h-6 w-32 rounded-md"></div>
             </div>
           ) : (
             <p className="text-gray-500 italic">No recommendations found</p>
