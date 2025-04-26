@@ -2,14 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { extractTextFromPDF, getPageRangeString } from '@/utils/pdf-parser';
 import { getTopicsFromText, generateEmbeddings, getVideoRecommendations, getImageSearchQueries } from '@/utils/gemini';
 import { searchYouTubeVideos } from '@/utils/youtube';
+import { searchGiphyGifs } from '@/utils/giphy';
 import { storeEmbeddings } from '@/utils/pinecone';
 
-// Import the interface from youtube.ts
+// Import the interfaces
 interface YouTubeVideo {
   id: string;
   title: string;
   thumbnail: string;
   channelTitle: string;
+}
+
+interface GiphyGif {
+  id: string;
+  title: string;
+  url: string;
+  preview: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -49,6 +57,7 @@ export async function POST(request: NextRequest) {
 
     let recommendations: string[] = [];
     let videoData: YouTubeVideo[][] = [];
+    let gifData: GiphyGif[][] = [];
 
     // Generate recommendations based on the type
     if (recommendationType === 'videos') {
@@ -57,8 +66,14 @@ export async function POST(request: NextRequest) {
       // Fetch actual YouTube videos for each recommendation
       const videoPromises = recommendations.map(query => searchYouTubeVideos(query));
       videoData = await Promise.all(videoPromises);
-    } else if (recommendationType === 'pics') {
+    } else if (recommendationType === 'pics' || recommendationType === 'gifs') {
       recommendations = await getImageSearchQueries(topics);
+      
+      // If GIFs are requested, fetch actual GIFs from GIPHY
+      if (recommendationType === 'gifs') {
+        const gifPromises = recommendations.map(query => searchGiphyGifs(query));
+        gifData = await Promise.all(gifPromises);
+      }
     }
 
     return NextResponse.json({
@@ -67,6 +82,7 @@ export async function POST(request: NextRequest) {
       topics,
       recommendations,
       videoData: recommendationType === 'videos' ? videoData : undefined,
+      gifData: recommendationType === 'gifs' ? gifData : undefined,
     });
   } catch (error: any) {
     console.error('Error processing PDF:', error);

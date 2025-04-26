@@ -38,23 +38,38 @@ export async function getTopicsFromText(text: string): Promise<string[]> {
     Text: ${text}
   `;
   
-  const result = await model.generateContent({
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    generationConfig,
-    safetySettings,
-  });
-  
-  const response = result.response;
-  const responseText = response.text();
-  
   try {
-    // Clean up response to extract valid JSON
-    const jsonStr = responseText.replace(/```json|```|\n/g, '').trim();
-    // console.log('Topics: ', jsonStr);
-    return JSON.parse(jsonStr);
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig,
+      safetySettings,
+    });
+    
+    const response = result.response;
+    const responseText = response.text();
+    
+    try {
+      // Clean up response to extract valid JSON
+      const jsonStr = responseText.replace(/```json|```|\n/g, '').trim();
+      // console.log('Topics: ', jsonStr);
+      
+      // Check if we have a valid JSON array
+      if (jsonStr.startsWith('[') && jsonStr.endsWith(']')) {
+        return JSON.parse(jsonStr);
+      } else {
+        // If not valid JSON, try to extract topics another way or use default
+        console.warn('Gemini response was not in expected JSON format:', jsonStr);
+        // Extract anything that looks like a topic between quotes
+        const extractedTopics = jsonStr.match(/"([^"]+)"/g)?.map(t => t.replace(/"/g, ''));
+        return extractedTopics || ['General knowledge', 'Education', 'Information', 'Learning', 'Reading'];
+      }
+    } catch (error) {
+      console.error('Failed to parse Gemini response:', error);
+      return ['General knowledge', 'Education', 'Information', 'Learning', 'Reading'];
+    }
   } catch (error) {
-    console.error('Failed to parse Gemini response:', error);
-    return [];
+    console.error('Error calling Gemini API:', error);
+    return ['General knowledge', 'Education', 'Information', 'Learning', 'Reading'];
   }
 }
 

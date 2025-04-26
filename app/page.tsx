@@ -4,11 +4,11 @@ import { useState } from 'react';
 import PDFUploader from '@/components/PDFUploader';
 import Recommendations from '@/components/Recommendations';
 import { Button } from "@/components/ui/button";
-import { Play, Image } from "lucide-react";
+import { Play, Image, Sticker } from "lucide-react";
 
 export default function Home() {
   const [uploadedPdfName, setUploadedPdfName] = useState<string | null>(null);
-  const [recommendationType, setRecommendationType] = useState<'videos' | 'pics' | null>(null);
+  const [recommendationType, setRecommendationType] = useState<'videos' | 'pics' | 'gifs' | null>(null);
 
   const handleUploadSuccess = (fileName: string) => {
     setUploadedPdfName(fileName);
@@ -19,7 +19,7 @@ export default function Home() {
       <header className="mb-12 flex flex-col items-center">
         <h1 className="text-3xl font-bold mb-2">Upload Your PDF</h1>
         <p className="text-gray-600 text-center max-w-2xl">
-          Upload a PDF document and get intelligent Video and Image recommendations based on its content
+          Upload a PDF document and get intelligent Video, Image, and GIF recommendations based on its content
         </p>
       </header>
 
@@ -43,7 +43,7 @@ export default function Home() {
                 className="w-full sm:w-auto"
                 size="lg"
               >
-                <Play className="w-5 h-5" />
+                <Play className="w-5 h-5 mr-2" />
                 Videos
               </Button>
               <Button
@@ -52,8 +52,17 @@ export default function Home() {
                 size="lg"
                 variant="secondary"
               >
-                <Image className="w-5 h-5" />
+                <Image className="w-5 h-5 mr-2" />
                 Images
+              </Button>
+              <Button
+                onClick={() => setRecommendationType('gifs')}
+                className="w-full sm:w-auto"
+                size="lg"
+                variant="outline"
+              >
+                <Sticker className="w-5 h-5 mr-2" />
+                GIFs
               </Button>
             </div>
             
