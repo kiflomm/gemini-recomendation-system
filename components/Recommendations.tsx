@@ -10,6 +10,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+interface YouTubeVideo {
+  id: string;
+  title: string;
+  thumbnail: string;
+  channelTitle: string;
+}
+
 interface RecommendationsProps {
   type: 'videos' | 'pics';
   pdfFileName: string;
@@ -19,6 +26,7 @@ export default function Recommendations({ type, pdfFileName }: RecommendationsPr
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [recommendations, setRecommendations] = useState<string[]>([]);
+  const [videoData, setVideoData] = useState<YouTubeVideo[][]>([]);
   const [topics, setTopics] = useState<string[]>([]);
   const [pageRange, setPageRange] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -71,6 +79,9 @@ export default function Recommendations({ type, pdfFileName }: RecommendationsPr
           const data = await response.json();
           
           setRecommendations(data.recommendations);
+          if (type === 'videos' && data.videoData) {
+            setVideoData(data.videoData);
+          }
           setTopics(data.topics);
           setPageRange(data.pageRange);
           
@@ -108,6 +119,23 @@ export default function Recommendations({ type, pdfFileName }: RecommendationsPr
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Render a YouTube video embed
+  const renderYouTubeVideo = (video: YouTubeVideo) => (
+    <div className="mb-4">
+      <iframe
+        width="100%"
+        height="400"
+        src={`https://www.youtube.com/embed/${video.id}`}
+        title={video.title}
+        // frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      ></iframe>
+      <h3 className="text-md font-medium mt-2">{video.title}</h3>
+      <p className="text-sm text-gray-500">{video.channelTitle}</p>
+    </div>
+  );
 
   return (
     <div className="w-full max-w-3xl mx-auto">
@@ -147,7 +175,24 @@ export default function Recommendations({ type, pdfFileName }: RecommendationsPr
         </div>
       ) : (
         <>
-          {recommendations.length > 0 ? (
+          {type === 'videos' && videoData.length > 0 ? (
+            <div className="grid grid-cols-1 gap-6">
+              {videoData.map((videoSet, idx) => (
+                <Card key={idx}>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Based on: {recommendations[idx]}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {videoSet.map((video, videoIdx) => (
+                      <div key={video.id || videoIdx}>
+                        {renderYouTubeVideo(video)}
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : type === 'pics' && recommendations.length > 0 ? (
             <div className="grid grid-cols-1 gap-4">
               {recommendations.map((recommendation, index) => (
                 <Card key={index}>
@@ -155,26 +200,14 @@ export default function Recommendations({ type, pdfFileName }: RecommendationsPr
                     <p className="text-lg">{recommendation}</p>
                   </CardContent>
                   <CardFooter>
-                    {type === 'videos' && (
-                      <a
-                        href={`https://www.youtube.com/results?search_query=${encodeURIComponent(recommendation)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        Search on YouTube →
-                      </a>
-                    )}
-                    {type === 'pics' && (
-                      <a
-                        href={`https://www.google.com/search?q=${encodeURIComponent(recommendation)}&tbm=isch`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        Search Images →
-                      </a>
-                    )}
+                    <a
+                      href={`https://www.google.com/search?q=${encodeURIComponent(recommendation)}&tbm=isch`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      Search Images →
+                    </a>
                   </CardFooter>
                 </Card>
               ))}

@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { extractTextFromPDF, getPageRangeString } from '@/utils/pdf-parser';
 import { getTopicsFromText, generateEmbeddings, getVideoRecommendations, getImageSearchQueries } from '@/utils/gemini';
+import { searchYouTubeVideos } from '@/utils/youtube';
 import { storeEmbeddings } from '@/utils/pinecone';
+
+// Import the interface from youtube.ts
+interface YouTubeVideo {
+  id: string;
+  title: string;
+  thumbnail: string;
+  channelTitle: string;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,10 +48,15 @@ export async function POST(request: NextRequest) {
     const topics = await getTopicsFromText(text);
 
     let recommendations: string[] = [];
+    let videoData: YouTubeVideo[][] = [];
 
     // Generate recommendations based on the type
     if (recommendationType === 'videos') {
       recommendations = await getVideoRecommendations(topics);
+      
+      // Fetch actual YouTube videos for each recommendation
+      const videoPromises = recommendations.map(query => searchYouTubeVideos(query));
+      videoData = await Promise.all(videoPromises);
     } else if (recommendationType === 'pics') {
       recommendations = await getImageSearchQueries(topics);
     }
@@ -52,6 +66,7 @@ export async function POST(request: NextRequest) {
       pageRange,
       topics,
       recommendations,
+      videoData: recommendationType === 'videos' ? videoData : undefined,
     });
   } catch (error: any) {
     console.error('Error processing PDF:', error);
