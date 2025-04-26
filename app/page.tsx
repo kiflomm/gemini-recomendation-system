@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react'; 
-import PDFUploader from '../components/PDFUploader';
-import Recommendations from '../components/Recommendations';
+import PDFUploader from '@/components/PDFUploader';
+import Recommendations from '@/components/Recommendations';
 import { Button } from "@/components/ui/button";
+import { Play, Image } from "lucide-react";
 
 export default function Home() {
   const [uploadedPdfName, setUploadedPdfName] = useState<string | null>(null);
@@ -42,26 +43,7 @@ export default function Home() {
                 className="w-full sm:w-auto"
                 size="lg"
               >
-                <svg 
-                  className="w-5 h-5 mr-2"
-                  fill="none" 
-                  stroke="currentColor"
-                  viewBox="0 0 24 24" 
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth="2" 
-                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                  />
-                  <path 
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <Play className="w-5 h-5" />
                 Videos
               </Button>
               <Button
@@ -70,20 +52,7 @@ export default function Home() {
                 size="lg"
                 variant="secondary"
               >
-                <svg
-                  className="w-5 h-5 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
+                <Image className="w-5 h-5" />
                 Images
               </Button>
             </div>

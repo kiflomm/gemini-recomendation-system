@@ -4,7 +4,7 @@ const apiKey = process.env.GOOGLE_AI_API_KEY!;
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const generationConfig = {
-  temperature: 0.7,
+  temperature: 0.4,
   topP: 0.8,
   topK: 40,
 };
@@ -29,7 +29,7 @@ const safetySettings = [
 ];
 
 export async function getTopicsFromText(text: string): Promise<string[]> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
   
   const prompt = `
     Extract the 5 most important topics or concepts from the following text.
@@ -50,6 +50,7 @@ export async function getTopicsFromText(text: string): Promise<string[]> {
   try {
     // Clean up response to extract valid JSON
     const jsonStr = responseText.replace(/```json|```|\n/g, '').trim();
+    // console.log('Topics: ', jsonStr);
     return JSON.parse(jsonStr);
   } catch (error) {
     console.error('Failed to parse Gemini response:', error);
@@ -69,7 +70,7 @@ export async function generateEmbeddings(text: string): Promise<number[]> {
 }
 
 export async function getVideoRecommendations(topics: string[]): Promise<string[]> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
   
   const prompt = `
     Generate YouTube search queries for the following topics. For each topic, create one search query 
@@ -98,7 +99,7 @@ export async function getVideoRecommendations(topics: string[]): Promise<string[
 }
 
 export async function getImageSearchQueries(topics: string[]): Promise<string[]> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
   
   const prompt = `
     Generate image search queries for the following topics. For each topic, create one 

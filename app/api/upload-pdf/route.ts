@@ -1,5 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { extractTextFromPDF } from '@/utils/pdf-parser';
+import { NextRequest, NextResponse } from 'next/server'; 
 
 // This configuration is needed for Next.js to handle form data properly
 export const config = {

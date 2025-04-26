@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from "@/components/ui/button";
+import { CloudUpload } from "lucide-react";
 
 interface PDFUploaderProps {
   onUploadSuccess: (fileName: string) => void;
@@ -39,13 +40,6 @@ export default function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
       }
 
       const data = await response.json();
-      
-      // Store the file in session storage for later use
-      sessionStorage.setItem('pdfFile', JSON.stringify({
-        name: file.name,
-        size: file.size,
-        lastModified: file.lastModified,
-      }));
       
       // Store the actual file in IndexedDB for later retrieval
       const dbRequest = indexedDB.open('pdfStorage', 1);
@@ -105,20 +99,7 @@ export default function PDFUploader({ onUploadSuccess }: PDFUploaderProps) {
           </div>
         ) : (
           <>
-            <svg
-              className="w-12 h-12 mx-auto text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-              ></path>
-            </svg>
+            <CloudUpload className="w-12 h-12 mx-auto text-gray-400" />
             <p className="mt-2 text-sm font-medium text-gray-900">
               {isDragActive
                 ? 'Drop the PDF here'
